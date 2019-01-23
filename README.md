@@ -17,5 +17,5 @@ and diverted flights
 FlightBehaviour contains similar kinds of counts, but broken down by airline carrier (Carrier). It also includes ArrDelay which gives information summarizing the number
 of flights that were delayed by more than 5 minutes.
 
-"cancelations", "arrivals", and "mapPlot" folders are shinny app for data visualization. These apps run through visulization.R.
+"cancelations", "arrivals", and "mapPlot" folders are shinny app for data visualization. These apps run through "visulization.R".
 "main.R" includes data wrangling and seasonal explorations. 
