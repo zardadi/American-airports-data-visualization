@@ -63,13 +63,15 @@ Airports <- airdf %>% group_by(Dest) %>% count(Dest)
 Airports <- Airports[order(-Airports$n),]
 # Number of airports in the data set
 nrow(Airports)
-# 40 most busiest airports by arrivals
-head(Airports[1],40)
+# 30 most busiest airports by arrivals
+head(Airports[1],30)
+
+# 
 
 
 
 # Select interesting columns from the air data set
-subair <- air %>% select(Dest, Origin, Month, ArrDelay, DepDelay, Cancelled)
+subair <- airdf %>% select(Dest, Origin, Month, ArrDelay, DepDelay, Cancelled)
 
 # Adding seasons into the data
 
