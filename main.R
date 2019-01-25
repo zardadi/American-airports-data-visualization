@@ -14,12 +14,59 @@
 #summary(air)
 #head(air)
 
-
-# airorts.R and FightBehaviour.R are derived from air.csv which include record of over 7 million flights.
-
-
-###
+############################################# data wrangling ##############################################################
+###########################################################################################################################
 library(dplyr)
+
+# Exploring air data set:
+summary(air)
+
+# replace all the empty vlaues with 'Null'
+air[air==""] <- NA
+# checking null values
+sapply(air,function(x) sum(is.na(x)))
+
+# missing values visualizing. 
+#library(Amelia)
+#missmap(air, main = "Missing values vs observed")
+
+# drop columns which are non-relevent or have the most missing values
+drop <- c('DepTime', 'ArrTime', 'ActualElapsedTime', 'CRSElapsedTime','AirTime',
+          'TaxiIn','TaxiOut','LateAircraftDelay', 'SecurityDelay', 'NASDelay',
+          'WeatherDelay', 'CarrierDelay','TailNum', 'CancellationCode')
+airdf <- air[,!(names(air)%in%drop)]
+
+
+# checking missing values in the  sub-set
+sapply(airdf, function(x) sum(is.na(x)))
+
+# removing all rows with null values.
+# (we may replace null values with some specific values)
+airdf <- na.omit(airdf)
+
+# checking null values
+
+sapply(airdf, function(x) sum(is.na(x)))
+
+# no more null values, Hooray!
+
+# explor the data
+sapply(airdf, function(x) length(unique(x)))
+
+
+################################################################################################################################
+###############################################################################################################################
+
+
+# Finding all the Airports in the data set and sort them by most arrivals
+Airports <- airdf %>% group_by(Dest) %>% count(Dest)
+Airports <- Airports[order(-Airports$n),]
+# Number of airports in the data set
+nrow(Airports)
+# 40 most busiest airports by arrivals
+head(Airports[1],40)
+
+
 
 # Select interesting columns from the air data set
 subair <- air %>% select(Dest, Origin, Month, ArrDelay, DepDelay, Cancelled)
