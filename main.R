@@ -65,17 +65,108 @@ Airports <- Airports[order(-Airports$n),]
 nrow(Airports)
 # 30 most busiest airports by arrivals
 head(Airports[1],30)
+# select top 10 busiest airports
+topAirports <- Airports[1:10,][1]
+topAirports
+top10 <- subset(airdf, Dest %in% topAirports$Dest)
+head(top10)
 
-# 
+
+library(lattice)
+# removing negative arrivals
+top10 <- top10[top10$ArrDelay > 5,]
+# Arrdelay box plot for top 10 airports
+bwplot(ArrDelay~Dest, data = top10, ylim=c(0,250))
+
+# top 5 busiest airports:
+topAirports <- Airports[1:5,][1]
+top5 <- subset(airdf, Dest %in% topAirports$Dest)
+head(top5)
+
+# removing negative arrivals
+top5 <- top5[top5$ArrDelay > 5,]
+# Arrdelay box plot for top 5 airports
+bwplot(ArrDelay~Dest, data = top5, ylim=c(0,250))
+
+# It seems ORD(Chicago airport) is the worst airport based on Arrival delay
+# Let's have a look at ORD airpot and see if there is any seasonal trend in the data.
+ord <- subset(top5, Dest == 'ORD')
+x11()
+ord$Month <- as.factor(ord$Month)
+bwplot(ArrDelay~Month, data=ord, ylim = c(0,300))
+# boxplot(ArrDelay~Month, data =ord, ylim = c(0,300))
+# it seems we have seasonal pattern in the arrival delay.
+# Let's compare all the top airports
+
+top5$Month <- as.factor(top5$Month)
+x11()
+bwplot(ArrDelay~Month | Dest, data=top5, ylim = c(0,300))
+# not much we can infer
+# Let's do four seasons analysis
+# Add four seasons into data
+season <- list('spring' = 3:5 , 'summer' = 6:8, 'fall'= 9:11 , 'winter' = c(1,2,12))   
+
+top5$season <- ifelse(top5$Month %in% season$fall, "fall", 
+                        ifelse(top5$Month %in% season$winter, "winter",
+                               ifelse(top5$Month %in% season$spring, "spring", "summer")))
+
+x11()
+bwplot(ArrDelay~season | Dest, data=top5, ylim = c(0,200))
+# we can see Fall has the lowest delays compare to the other seasons.
+
+# Repeat the same analysis for top 10 airports
+top10$season <- ifelse(top10$Month %in% season$fall, "fall", 
+                      ifelse(top10$Month %in% season$winter, "winter",
+                             ifelse(top10$Month %in% season$spring, "spring", "summer")))
+
+top10$Month <- as.factor(top10$Month)
+x11()
+bwplot(ArrDelay~Month | Dest, data=top10, ylim = c(0,300))
+xyplot(ArrDelay~Month | Dest, data=top10, ylim = c(0,300))
+
+x11()
+bwplot(ArrDelay~season | Dest, data=top10, ylim = c(0,200))
+# for most airports fall has the least delays.
+
+# let's see if there is any daily effect.
+top10$DayOfWeek <- as.factor(top10$DayOfWeek)
+x11()
+bwplot(ArrDelay~DayOfWeek | Dest, data=top10, ylim = c(0,200))
+
+################################################################################################################################
+################################################################################################################################
+# checking airlines
+airlines <- airdf %>% group_by(UniqueCarrier) %>% count(UniqueCarrier)
+airlines <- airlines[order(-airlines$n),]
+# Number of airlines in the data set
+nrow(airlines)
+# select top 10 busiest airlines
+topAirlines <- airlines[1:10,]
+topAirlines
+top10 <- subset(airdf, UniqueCarrier %in% topAirlines$UniqueCarrier)
+head(top10)
+# removing arrival delays less than 5 minutes
+top10 <- top10[top10$ArrDelay > 5,]
+# Arrdelay box plot for top 10 airports
+bwplot(ArrDelay~UniqueCarrier, data = top10, ylim=c(0,250))
+
+
+top10$Month <- as.factor(top10$Month)
+x11()
+bwplot(ArrDelay~Month | UniqueCarrier, data=top10, ylim = c(0,300))
 
 
 
+
+
+
+#############################################################################################################################
+#############################################################################################################################
 # Select interesting columns from the air data set
 subair <- airdf %>% select(Dest, Origin, Month, ArrDelay, DepDelay, Cancelled)
 
 # Adding seasons into the data
 
-season <- list('spring' = 3:5 , 'summer' = 6:8, 'fall'= 9:11 , 'winter' = c(1,2,12))   
 
 subair$season <- ifelse(subair$Month %in% season$fall, "fall", 
                         ifelse(subair$Month %in% season$winter, "winter",
