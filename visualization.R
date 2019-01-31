@@ -37,6 +37,8 @@ summary(FlightBehaviour)
 
 # cancellations shiny app is a shiny app which provide data visualization on cancellations.R
 # It contains two cut-off levels for arrivals and cancellation. 
+library(shiny)
+library(leaflet)
 runApp("cancellations")
 
 # Here is a shiny app for arrivals data visualization
