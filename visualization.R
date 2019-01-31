@@ -38,17 +38,10 @@ summary(FlightBehaviour)
 # cancellations shiny app is a shiny app which provide data visualization on cancellations.R
 # It contains two cut-off levels for arrivals and cancellation. 
 library(shiny)
-library(leaflet)
 runApp("cancellations")
 
 # Here is a shiny app for arrivals data visualization
 runApp("arrivals")
-
-
-
-# mapPlot is a shiny app to explore proportional flight delays.
-# This app provides two cut-off slider bars for proportional delay and number of arrivals
-runApp("mapPlot")
 
 
 ###
